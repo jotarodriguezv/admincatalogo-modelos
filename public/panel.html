@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Panel — Talent Roster</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/admin.css"/>
+</head>
+<body class="panel-page">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <span class="logo-mark">TR</span>
+      <span class="logo-text">Talent Roster</span>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="#" class="nav-item active" data-view="modelos">Modelos</a>
+      <a href="https://talentroaster.verificame.click" target="_blank" class="nav-item">Ver sitio →</a>
+    </nav>
+    <button class="btn-logout" id="logoutBtn">Cerrar sesión</button>
+  </aside>
+
+  <!-- Main -->
+  <main class="panel-main">
+    <header class="panel-header">
+      <h1 id="viewTitle">Modelos</h1>
+      <button class="btn-primary" id="btnNuevaModelo">+ Nueva modelo</button>
+    </header>
+
+    <!-- Lista de modelos -->
+    <section id="viewModelos">
+      <div class="modelos-grid" id="modelosGrid">
+        <div class="loading-panel">Cargando modelos...</div>
+      </div>
+    </section>
+  </main>
+
+  <!-- MODAL: Formulario de modelo -->
+  <div class="modal-overlay hidden" id="modalModelo">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 id="modalTitulo">Nueva modelo</h2>
+        <button class="modal-close" id="modalClose">✕</button>
+      </div>
+      <div class="modal-body">
+        <form id="formModelo">
+          <input type="hidden" id="modeloId"/>
+
+          <div class="form-grid">
+            <div class="field">
+              <label>Nombre real *</label>
+              <input type="text" id="fNombre" required/>
+            </div>
+            <div class="field">
+              <label>Nombre artístico</label>
+              <input type="text" id="fNombreArtistico"/>
+            </div>
+            <div class="field">
+              <label>Ciudad base *</label>
+              <input type="text" id="fCiudad" required/>
+            </div>
+            <div class="field">
+              <label>Perfil / Estilo</label>
+              <input type="text" id="fEstilo" placeholder="Ej: Lifestyle, Comercial, Editorial"/>
+            </div>
+            <div class="field field-full">
+              <label>Descripción corta</label>
+              <textarea id="fDescripcion" rows="3"></textarea>
+            </div>
+            <div class="field">
+              <label>Tarifa sesión estándar (COP) *</label>
+              <input type="number" id="fTarifaSesion" required min="0"/>
+            </div>
+            <div class="field">
+              <label>Tarifa hora adicional (COP)</label>
+              <input type="number" id="fTarifaHora" min="0"/>
+            </div>
+            <div class="field">
+              <label>Transporte dentro de la ciudad</label>
+              <select id="fTransporte">
+                <option value="false">No incluido</option>
+                <option value="true">Incluido</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Estado</label>
+              <select id="fActiva">
+                <option value="true">Activa (visible)</option>
+                <option value="false">Inactiva (oculta)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Foto de perfil -->
+          <div class="foto-perfil-section">
+            <label class="section-label">Foto de perfil</label>
+            <div class="foto-preview-wrap">
+              <img id="fotoPrevActual" src="" alt="Foto actual" class="foto-prev hidden"/>
+              <span id="fotoPrevPlaceholder" class="foto-placeholder">Sin foto</span>
+            </div>
+            <div class="upload-zona" id="uploadZonaPerfil">
+              <input type="file" id="filePerfil" accept="image/jpeg,image/png,image/webp" class="hidden"/>
+              <button type="button" class="btn-secondary" id="btnSubirPerfil">Subir foto de perfil</button>
+              <span class="upload-estado" id="uploadEstadoPerfil"></span>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn-secondary" id="btnCancelarModal">Cancelar</button>
+            <button type="submit" class="btn-primary" id="btnGuardarModelo">Guardar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Portafolio -->
+  <div class="modal-overlay hidden" id="modalPortafolio">
+    <div class="modal modal-wide">
+      <div class="modal-header">
+        <h2 id="portafolioTitulo">Portafolio</h2>
+        <button class="modal-close" id="portafolioClose">✕</button>
+      </div>
+      <div class="modal-body">
+        <!-- Agregar item -->
+        <div class="port-agregar">
+          <h3>Agregar contenido</h3>
+          <div class="port-tabs">
+            <button class="port-tab active" data-tipo="foto">📷 Foto</button>
+            <button class="port-tab" data-tipo="video">🎬 Video / Reel</button>
+          </div>
+
+          <!-- Panel foto -->
+          <div class="port-panel" id="portPanelFoto">
+            <div class="upload-zona">
+              <input type="file" id="filePortafolio" accept="image/jpeg,image/png,image/webp" class="hidden" multiple/>
+              <button type="button" class="btn-secondary" id="btnSubirPortafolio">Seleccionar fotos</button>
+              <span class="upload-estado" id="uploadEstadoPort"></span>
+            </div>
+            <div class="field" style="margin-top:12px;">
+              <label>Descripción (opcional)</label>
+              <input type="text" id="fotoDesc" placeholder="Ej: Sesión comercial"/>
+            </div>
+          </div>
+
+          <!-- Panel video -->
+          <div class="port-panel hidden" id="portPanelVideo">
+            <div class="field">
+              <label>URL del video</label>
+              <input type="text" id="videoUrl" placeholder="https://www.instagram.com/reel/... o https://youtube.com/watch?v=..."/>
+            </div>
+            <div class="field">
+              <label>Descripción (opcional)</label>
+              <input type="text" id="videoDesc" placeholder="Ej: Video comercial restaurante"/>
+            </div>
+            <button type="button" class="btn-primary" id="btnAgregarVideo">Agregar video</button>
+          </div>
+        </div>
+
+        <!-- Lista del portafolio actual -->
+        <div class="port-lista-wrap">
+          <h3>Contenido actual</h3>
+          <div class="port-lista" id="portLista">
+            <p class="port-empty">No hay contenido aún.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/admin.js"></script>
+</body>
+</html>

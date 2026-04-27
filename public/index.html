@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin — Talent Roster</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/admin.css"/>
+</head>
+<body class="login-page">
+  <div class="login-wrap">
+    <div class="login-logo">
+      <span class="logo-mark">TR</span>
+      <span class="logo-text">Talent Roster</span>
+    </div>
+    <p class="login-sub">Panel de administración</p>
+
+    <form class="login-form" id="loginForm">
+      <div class="field">
+        <label>Usuario</label>
+        <input type="text" id="loginUser" autocomplete="username" required/>
+      </div>
+      <div class="field">
+        <label>Contraseña</label>
+        <input type="password" id="loginPass" autocomplete="current-password" required/>
+      </div>
+      <div class="error-msg hidden" id="loginError">Usuario o contraseña incorrectos</div>
+      <button type="submit" class="btn-primary" id="loginBtn">Entrar</button>
+    </form>
+  </div>
+
+  <script>
+    // Si ya hay token válido, ir al panel
+    if (localStorage.getItem('tr_token')) {
+      window.location.href = '/panel.html';
+    }
+
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('loginBtn');
+      const error = document.getElementById('loginError');
+      btn.textContent = 'Verificando...';
+      btn.disabled = true;
+      error.classList.add('hidden');
+
+      const res = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          usuario: document.getElementById('loginUser').value,
+          password: document.getElementById('loginPass').value
+        })
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        localStorage.setItem('tr_token', data.token);
+        window.location.href = '/panel.html';
+      } else {
+        error.classList.remove('hidden');
+        btn.textContent = 'Entrar';
+        btn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
