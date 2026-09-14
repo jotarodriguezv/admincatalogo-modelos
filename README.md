@@ -64,3 +64,7 @@ Todos los endpoints (excepto /api/login) requieren header:
 | POST | /api/portafolio | Agregar item |
 | DELETE | /api/portafolio/:id | Eliminar item |
 | POST | /api/upload | Subir foto |
+
+## Pendientes
+
+Ver [`PENDIENTES.md`](PENDIENTES.md). **Hasta resolver el primero, no subir fotos al panel:** se pierden al redesplegar.
